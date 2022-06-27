@@ -1,5 +1,6 @@
 #!/bin/bash
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
+#SBATCH --gpus-per-node=1
 #SBATCH --time=01:00:00 # DD-HH:MM:SS
 #SBATCH --mem-per-cpu=4GB
 #SBATCH --array=0-1
