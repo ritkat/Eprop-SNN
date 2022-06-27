@@ -26,15 +26,17 @@ if __name__ == '__main__':
 
   parameters = dict(
 		rec_units = [10],
-    epochs=[2,3,5]
+    epochs=[2,3,5],
+    lr=[1e-4,1e-3,1e-2,1e-1]
     )
   param_values = [v for v in parameters.values()] 
-  for args.n_rec, args.epochs in product(*param_values):
+  for args.n_rec, args.epochs, args.lr in product(*param_values):
     accuracy_epoch, loss_epoch = evaluate_encoder(args)
     df = df.append({"recu":args.n_rec,
             "epochs":args.epochs,
             "accuracy per epoch":accuracy_epoch,
-            "loss per epoch":loss_epoch
+            "loss per epoch":loss_epoch,
+            "Learning Rate": args.lr
                     },ignore_index=True)
 
 

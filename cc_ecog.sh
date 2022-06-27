@@ -7,8 +7,8 @@
 #SBATCH --job-name=ecog_encoding
 
 echo "Moving files"
-cp -r $HOME/eprop $SLURM_TMPDIR/eprop
-cd $SLURM_TMPDIR/eprop
+cp -r $HOME/Eprop-SNN $SLURM_TMPDIR/Eprop-SNN
+cd $SLURM_TMPDIR/Eprop-SNN
 
 echo "Starting application"
 mkdir -p "$HOME/eprop_results/"
