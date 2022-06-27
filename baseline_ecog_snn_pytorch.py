@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    log_file_name = 'accuracy_log'+str(timestr)+'.csv'
+    output_file = f"eprop_"+str(int(args.seed))+".csv"
     pwd = os.getcwd()
     log_dir = pwd+'/log_dir/'
-    df.to_csv(log_dir+log_file_name, index=False)
+    df.to_csv(output_file, index=False)
