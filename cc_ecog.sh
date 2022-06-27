@@ -13,7 +13,7 @@ cd $SLURM_TMPDIR/eprop
 echo "Starting application"
 mkdir -p "$HOME/eprop_results/"
 
-if $HOME/env/bin/python baseline_ecog_snn_pytorch.py --seed $SLURM_ARRAY_TASK_ID ; then
+if $HOME/env_snn/bin/python baseline_ecog_snn_pytorch.py --seed $SLURM_ARRAY_TASK_ID ; then
     echo "Copying results"
     mv "eprop_$SLURM_ARRAY_TASK_ID.csv" "$HOME/eprop_results/"
 fi
