@@ -28,8 +28,8 @@ if __name__ == '__main__':
   for i in range(len(datasets)):
     args.n_rec = np.random.choice([10,5,8,2,4])
     args.epochs=np.random.choice([20])
-    args.lr=np.random.choice([1e-4,1e-3,1e-2,1e-1])
-    args.loss = np.random.choice(['MSE', 'BCE', 'CE'])
+    args.lr=np.random.choice([1e-2,1e-1])
+    args.loss = np.random.choice(['BCE', 'CE'])
     args.optimizer = np.random.choice(['SGD', 'Adam', 'NAG', 'RMSprop'])
 
 
