@@ -23,23 +23,25 @@ if __name__ == '__main__':
   random.seed(seed)
   np.random.seed(seed)
   df = pd.DataFrame({"recu":[],"epochs":[]})
+  datasets=["bci3"]
 
-  parameters = dict(
-		rec_units = [10],
-    epochs=[2,3,5],
-    lr=[1e-4,1e-3,1e-2,1e-1]
-    )
-  param_values = [v for v in parameters.values()] 
-  for args.n_rec, args.epochs, args.lr in product(*param_values):
+  for i in range(len(datasets)):
+    args.n_rec = np.random.choice([10,5,8,2,4])
+    args.epochs=np.random.choice([20])
+    args.lr=np.random.choice([1e-4,1e-3,1e-2,1e-1])
+    args.loss = np.random.choice(['MSE', 'BCE', 'CE'])
+    args.optimizer = np.random.choice(['SGD', 'Adam', 'NAG', 'RMSprop'])
+
+
     accuracy_epoch, loss_epoch = evaluate_encoder(args)
     df = df.append({"recu":args.n_rec,
             "epochs":args.epochs,
             "accuracy per epoch":accuracy_epoch,
             "loss per epoch":loss_epoch,
-            "Learning Rate": args.lr
+            "Learning Rate": args.lr,
+            "Loss": args.loss,
+            "Optimizer": args.optimizer
                     },ignore_index=True)
-
-
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
     output_file = f"eprop_"+str(int(args.seed))+".csv"
