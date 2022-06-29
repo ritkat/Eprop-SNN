@@ -48,9 +48,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import KFold
 from sklearn.model_selection import StratifiedKFold
 from utilis import *
+from encode import *
 from args import args as my_args
 
-
+nb_channels,spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, X_Train_list,X_Test_list, Y_Train_list,Y_Test_list,avg_spike_rate_list = encode(args)
 
 class CueAccumulationDataset(torch.utils.data.Dataset):
     """Adapted from the original TensorFlow e-prop implemation from TU Graz, available at https://github.com/IGITUGraz/eligibility_propagation"""
@@ -145,8 +146,8 @@ def setup(args):
 
 def load_dataset_cue_accumulation(args, kwargs):
 
-    trainset = BCI3Dataset()
-    testset  = BCI3Dataset_test()
+    trainset = BCI3Dataset(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
+    testset  = BCI3Dataset_test(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
 
     train_loader     = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size,      shuffle=args.shuffle, **kwargs)
     traintest_loader = torch.utils.data.DataLoader(trainset, batch_size=args.test_batch_size, shuffle=False       , **kwargs)
@@ -182,7 +183,7 @@ def generate_poisson_noise_np(prob_pattern, freezing_seed=None):
 class BCI3Dataset(torch.utils.data.Dataset):
     """Adapted from the original TensorFlow e-prop implemation from TU Graz, available at https://github.com/IGITUGraz/eligibility_propagation"""
 
-    def __init__(self):
+    def __init__(self, spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list):
         #args=my_args()
         n_cues     = 7
         f0         = 128
@@ -200,13 +201,13 @@ class BCI3Dataset(torch.utils.data.Dataset):
         n_channel       = self.n_in // n_symbols
         prob0           = f0 * self.dt
         t_silent        = self.t_interval - t_cue
-        data=np.load("dataset/bci3_encodedbci31111.npz", allow_pickle=True)
-        spike_time_up_train=data["spike_times_train_up"]
-        spike_time_dn_train=data["spike_times_train_dn"]
+        #data=np.load("dataset/bci3_encodedbci31111.npz", allow_pickle=True)
+        spike_time_up_train=spike_times_train_up_list[0][0]
+        spike_time_dn_train=spike_times_train_dn_list[0][0]
         spikes_train=spike_time_to_spike(spike_time_up_train, spike_time_dn_train, 3000)
         #spikes_train=np.array(spikes_train)
         shape=np.array(spikes_train.shape[1])
-        events=data["Y_Train"]
+        events=Y_Train_list[0]
         for k in range(events.shape[0]):
             if events[k,0]==-1:
                 events[k,0]=0
@@ -251,7 +252,7 @@ class BCI3Dataset(torch.utils.data.Dataset):
 class BCI3Dataset_test(torch.utils.data.Dataset):
     """Adapted from the original TensorFlow e-prop implemation from TU Graz, available at https://github.com/IGITUGraz/eligibility_propagation"""
 
-    def __init__(self):
+    def __init__(self, spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list):
         args=my_args()
         n_cues     = 7
         f0         = 128
@@ -269,14 +270,14 @@ class BCI3Dataset_test(torch.utils.data.Dataset):
         n_channel       = self.n_in // n_symbols
         prob0           = f0 * self.dt
         t_silent        = self.t_interval - t_cue
-        data=np.load("dataset/bci3_encodedbci31111.npz", allow_pickle=True)
+        #data=np.load("dataset/bci3_encodedbci31111.npz", allow_pickle=True)
         #spikes_train=np.array(spikes_train)
-        spike_time_up_test=data["spike_times_test_up"]
-        spike_time_dn_test=data["spike_times_test_dn"]
+        spike_time_up_test=spike_times_test_up_list[0][0]
+        spike_time_dn_test=spike_times_test_dn_list[0][0]
         spikes_test=spike_time_to_spike(spike_time_up_test, spike_time_dn_test, 3000)
         #spikes_test=np.array(spikes_test)
         shape=np.array(spikes_test).shape[1]
-        true_label=data["Y_Test"]
+        true_label=Y_Test_list[0]
         for k in range(true_label.shape[0]):
             if true_label[k,0]==-1:
                 true_label[k,0]=0

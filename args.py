@@ -37,13 +37,13 @@ def args():
 
     parser.add_argument(
         "--encode_thr_up",
-        default=1,
+        default=1.36,
         type=float,
         help="Threshold UP for spike encoding" "e.g. 0.25, 0.50 etc.",
     )
     parser.add_argument(
         "--encode_thr_dn",
-        default=1,
+        default=1.36,
         type=float,
         help="Threshold UP for spike encoding" "e.g. 0.25, 0.50 etc.",
     )
@@ -149,7 +149,7 @@ def args():
     )
     parser.add_argument(
         "--encode_thr_dev",
-        default=0.00001,
+        default=1.36,
         type=float,
         help="Standard deviation for threshold distribution",
     )

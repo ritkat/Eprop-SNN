@@ -183,17 +183,14 @@ def encode(args):
         # Shape of X_Test is (100, 64, 3000)
         Y_Test = data['Y_Test']
 
-        Y_Train_list.append(Y_Train)
-        Y_Test_list.append(Y_Test)
-
-
-
         X_Train = np.array(X_Train)
         Y_Train = np.array(Y_Train)
 
         X_Test = np.array(X_Test)
         Y_Test = np.array(Y_Test)
 
+        Y_Train_list.append(Y_Train)
+        Y_Test_list.append(Y_Test)
         
         training_data=X_Train
         testing_data=X_Test

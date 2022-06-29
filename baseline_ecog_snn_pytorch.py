@@ -26,12 +26,12 @@ if __name__ == '__main__':
   datasets=["bci3"]
 
   for i in range(len(datasets)):
+    args.encode_thr_up = np.random.choice([1.36, 1, 0.5, 0.1])
     args.n_rec = np.random.choice([10,5,8,2,4])
     args.epochs=np.random.choice([20])
     args.lr=np.random.choice([1e-2,1e-1])
     args.loss = np.random.choice(['BCE', 'CE'])
     args.optimizer = np.random.choice(['SGD', 'Adam', 'NAG', 'RMSprop'])
-
 
     accuracy_epoch, loss_epoch = evaluate_encoder(args)
     df = df.append({"recu":args.n_rec,
@@ -40,7 +40,8 @@ if __name__ == '__main__':
             "loss per epoch":loss_epoch,
             "Learning Rate": args.lr,
             "Loss": args.loss,
-            "Optimizer": args.optimizer
+            "Optimizer": args.optimizer,
+            "Threshold": args.encode_thr_up
                     },ignore_index=True)
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
