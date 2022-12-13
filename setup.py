@@ -51,6 +51,7 @@ from utilis import *
 from encode import *
 from args import args as my_args
 
+args = my_args()
 nb_channels,spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, X_Train_list,X_Test_list, Y_Train_list,Y_Test_list,avg_spike_rate_list = encode(args)
 
 class CueAccumulationDataset(torch.utils.data.Dataset):
@@ -146,22 +147,45 @@ def setup(args):
 
 def load_dataset_cue_accumulation(args, kwargs):
 
-    trainset = BCI3Dataset(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
-    testset  = BCI3Dataset_test(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
+    if args.datas=="bci3":
 
-    train_loader     = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size,      shuffle=args.shuffle, **kwargs)
-    traintest_loader = torch.utils.data.DataLoader(trainset, batch_size=args.test_batch_size, shuffle=False       , **kwargs)
-    test_loader      = torch.utils.data.DataLoader(testset , batch_size=args.test_batch_size, shuffle=False       , **kwargs)
-    
-    args.n_classes      = trainset.n_out
-    args.n_steps        = trainset.seq_len
-    args.n_inputs       = trainset.n_in
-    args.dt             = trainset.dt
-    args.classif        = True
-    args.full_train_len = len(trainset)
-    args.full_test_len  = len(testset)
-    args.delay_targets  = trainset.t_interval
-    args.skip_test      = False
+        nb_channels,spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, X_Train_list,X_Test_list, Y_Train_list,Y_Test_list,avg_spike_rate_list = encode(args)
+
+        trainset = BCI3Dataset(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
+        testset  = BCI3Dataset_test(spike_times_train_up_list, spike_times_train_dn_list, spike_times_test_up_list, spike_times_test_dn_list, Y_Train_list,Y_Test_list)
+
+        train_loader     = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size,      shuffle=args.shuffle, **kwargs)
+        traintest_loader = torch.utils.data.DataLoader(trainset, batch_size=args.test_batch_size, shuffle=False       , **kwargs)
+        test_loader      = torch.utils.data.DataLoader(testset , batch_size=args.test_batch_size, shuffle=False       , **kwargs)
+        
+        args.n_classes      = trainset.n_out
+        args.n_steps        = trainset.seq_len
+        args.n_inputs       = trainset.n_in
+        args.dt             = trainset.dt
+        args.classif        = True
+        args.full_train_len = len(trainset)
+        args.full_test_len  = len(testset)
+        args.delay_targets  = trainset.t_interval
+        args.skip_test      = False
+
+    else:
+        trainset = CueAccumulationDataset(args,"train")
+        testset  = CueAccumulationDataset(args,"test")
+
+        train_loader     = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size,      shuffle=args.shuffle, **kwargs)
+        traintest_loader = torch.utils.data.DataLoader(trainset, batch_size=args.test_batch_size, shuffle=False       , **kwargs)
+        test_loader      = torch.utils.data.DataLoader(testset , batch_size=args.test_batch_size, shuffle=False       , **kwargs)
+        
+        args.n_classes      = trainset.n_out
+        args.n_steps        = trainset.seq_len
+        args.n_inputs       = trainset.n_in
+        args.dt             = trainset.dt
+        args.classif        = True
+        args.full_train_len = len(trainset)
+        args.full_test_len  = len(testset)
+        args.delay_targets  = trainset.t_interval
+        args.skip_test      = False
+
     
     return (train_loader, traintest_loader, test_loader)
 

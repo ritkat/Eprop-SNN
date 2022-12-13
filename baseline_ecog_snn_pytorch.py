@@ -27,11 +27,15 @@ if __name__ == '__main__':
 
   for i in range(len(datasets)):
     args.encode_thr_up = np.random.choice([1.36, 1, 0.5, 0.1])
-    args.n_rec = np.random.choice([10,5,8,2,4])
-    args.epochs=np.random.choice([20])
-    args.lr=np.random.choice([1e-2,1e-1])
-    args.loss = np.random.choice(['BCE', 'CE'])
-    args.optimizer = np.random.choice(['SGD', 'Adam', 'NAG', 'RMSprop'])
+    #args.n_rec = np.random.choice([2,4,8,16,32,64,128,256])
+    args.n_rec = np.random.choice([100])
+    #args.epochs=np.random.choice([20])
+    args.epochs=np.random.choice([10])
+    #args.lr=np.random.choice([1e-2,1e-1])
+    args.lr=np.random.choice([1e-4])
+    args.loss = np.random.choice(['BCE'])
+    args.optimizer = np.random.choice(['Adam'])
+    args.datas="cue_acc"
 
     accuracy_epoch, loss_epoch = evaluate_encoder(args)
     df = df.append({"recu":args.n_rec,

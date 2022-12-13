@@ -17,12 +17,14 @@ def args():
     parser.add_argument('--lr-layer-norm', type=float, nargs='+', default=(0.05,0.05,1.0), help='Per-layer modulation factor of the learning rate')
     parser.add_argument('--batch-size', type=int, default=5, help='Batch size for training (limited by the available GPU memory)')
     parser.add_argument('--test-batch-size', type=int, default=5, help='Batch size for testing (limited by the available GPU memory)')
-    parser.add_argument('--train-len', type=int, default=80, help='Number of training set samples')
-    parser.add_argument('--test-len', type=int, default=20, help='Number of test set samples')
+    #parser.add_argument('--train-len', type=int, default=80, help='Number of training set samples')
+    parser.add_argument('--train-len', type=int, default=200, help='Number of training set samples')
+    #parser.add_argument('--test-len', type=int, default=20, help='Number of test set samples')
+    parser.add_argument('--test-len', type=int, default=100, help='Number of test set samples')
     parser.add_argument('--visualize', type=bool, default=True, help='Enable network visualization')
     parser.add_argument('--visualize-light', type=bool, default=True, help='Enable light mode in network visualization, plots traces only for a single neuron')
     # Network model parameters
-    parser.add_argument('--n_rec', type=int, default=10, help='Number of recurrent units')
+    parser.add_argument('--n_rec', type=int, default=100, help='Number of recurrent units')
     parser.add_argument('--model', type=str, choices = ['LIF'], default='LIF', help='Neuron model in the recurrent layer. Support for the ALIF neuron model has been removed.')
     parser.add_argument('--threshold', type=float, default=0.6, help='Firing threshold in the recurrent layer')
     parser.add_argument('--tau-mem', type=float, default=2000e-3, help='Membrane potential leakage time constant in the recurrent layer (in seconds)')
@@ -66,8 +68,6 @@ def args():
         type=str,
         help="",
     )
-    
-
     
     parser.add_argument(
         "--tstep",

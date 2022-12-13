@@ -130,9 +130,9 @@ class SRNN(nn.Module):
         # Input and recurrent eligibility vectors for the 'LIF' model (vectorized computation, model-dependent)
         assert self.model == "LIF", "Nice try, but model " + self.model + " is not supported. ;-)"
         alpha_conv  = torch.tensor([self.alpha ** (self.n_t-i-1) for i in range(self.n_t)]).float().view(1,1,-1).to(self.device)
-        trace_in    = F.conv1d(     x.permute(1,2,0), alpha_conv.expand(self.n_in ,-1,-1), padding=self.n_t, groups=self.n_in )[:,:,1:self.n_t+1].unsqueeze(1).expand(-1,self.n_rec,-1,-1)  #n_b, n_rec, n_in , n_t 
+        trace_in    = F.conv1d(x.permute(1,2,0), alpha_conv.expand(self.n_in ,-1,-1), padding=self.n_t, groups=self.n_in )[:,:,1:self.n_t+1].unsqueeze(1).expand(-1,self.n_rec,-1,-1)  #n_b, n_rec, n_in , n_t 
         trace_in    = torch.einsum('tbr,brit->brit', h, trace_in )                                                                                                                          #n_b, n_rec, n_in , n_t 
-        trace_rec   = F.conv1d(self.z.permute(1,2,0), alpha_conv.expand(self.n_rec,-1,-1), padding=self.n_t, groups=self.n_rec)[:,:, :self.n_t  ].unsqueeze(1).expand(-1,self.n_rec,-1,-1)  #n_b, n_rec, n_rec, n_t
+        trace_rec   = F.conv1d(self.z.permute(1,2,0), alpha_conv.expand(self.n_rec,-1,-1), padding=self.n_t, groups=self.n_rec)[:,:, :self.n_t].unsqueeze(1).expand(-1,self.n_rec,-1,-1)  #n_b, n_rec, n_rec, n_t
         trace_rec   = torch.einsum('tbr,brit->brit', h, trace_rec)                                                                                                                          #n_b, n_rec, n_rec, n_t    
         trace_reg   = trace_rec
 
@@ -141,8 +141,8 @@ class SRNN(nn.Module):
         trace_out  = F.conv1d(self.z.permute(1,2,0), kappa_conv.expand(self.n_rec,-1,-1), padding=self.n_t, groups=self.n_rec)[:,:,1:self.n_t+1]  #n_b, n_rec, n_t
 
         # Eligibility traces
-        trace_in     = F.conv1d(   trace_in.reshape(self.n_b,self.n_in *self.n_rec,self.n_t), kappa_conv.expand(self.n_in *self.n_rec,-1,-1), padding=self.n_t, groups=self.n_in *self.n_rec)[:,:,1:self.n_t+1].reshape(self.n_b,self.n_rec,self.n_in ,self.n_t)   #n_b, n_rec, n_in , n_t  
-        trace_rec    = F.conv1d(  trace_rec.reshape(self.n_b,self.n_rec*self.n_rec,self.n_t), kappa_conv.expand(self.n_rec*self.n_rec,-1,-1), padding=self.n_t, groups=self.n_rec*self.n_rec)[:,:,1:self.n_t+1].reshape(self.n_b,self.n_rec,self.n_rec,self.n_t)   #n_b, n_rec, n_rec, n_t
+        trace_in     = F.conv1d(trace_in.reshape(self.n_b,self.n_in *self.n_rec,self.n_t), kappa_conv.expand(self.n_in *self.n_rec,-1,-1), padding=self.n_t, groups=self.n_in *self.n_rec)[:,:,1:self.n_t+1].reshape(self.n_b,self.n_rec,self.n_in ,self.n_t)   #n_b, n_rec, n_in , n_t  
+        trace_rec    = F.conv1d(trace_rec.reshape(self.n_b,self.n_rec*self.n_rec,self.n_t), kappa_conv.expand(self.n_rec*self.n_rec,-1,-1), padding=self.n_t, groups=self.n_rec*self.n_rec)[:,:,1:self.n_t+1].reshape(self.n_b,self.n_rec,self.n_rec,self.n_t)   #n_b, n_rec, n_rec, n_t
         
         # Learning signals
         err = yo - yt
